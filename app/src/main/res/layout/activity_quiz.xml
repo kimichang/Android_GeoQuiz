@@ -32,11 +32,23 @@
 
         </LinearLayout>
 
-        <Button
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+
+                android:id="@+id/pre_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pre_button"/>
+
+            <Button
 
             android:id="@+id/mext_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/next_button"/>
-
+        </LinearLayout>
 </LinearLayout>
