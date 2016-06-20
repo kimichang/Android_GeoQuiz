@@ -1,5 +1,6 @@
 package com.newgeniuser.geoquiz;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -18,7 +19,9 @@ public class QuizActivity extends AppCompatActivity {
     private Button mNextButton;
     private Button mPrevButton;
     private Button mCheatButton;
+    private boolean mIsCheater;
     private TextView mQuestionTextView;
+    private static final int REQUEST_CODE_CHEAT = 0;
     private Question[] mQuestionBank=new Question[]{
             new Question(R.string.question_oceans,true),
             new Question(R.string.question_africa,false),
@@ -66,6 +69,7 @@ public class QuizActivity extends AppCompatActivity {
                 mCurrentIndex=(mCurrentIndex+1)%mQuestionBank.length;
                 //      int question=mQuestionBank[mCurrentIndex].getTextResId();
                 //      mQuestionTextView.setText(question);
+                mIsCheater = false;
                 updateQuestion();
             }
         });
@@ -89,7 +93,7 @@ public class QuizActivity extends AppCompatActivity {
             public void onClick(View v){
                 boolean answerIsTrue=mQuestionBank[mCurrentIndex].isAnswerTrue();
                 Intent intent=CheatActivity.newIntent(QuizActivity.this,answerIsTrue);
-                startActivity(intent);
+                startActivityForResult(intent, REQUEST_CODE_CHEAT);
 
             }
         });
@@ -110,13 +114,33 @@ public class QuizActivity extends AppCompatActivity {
     private void checkAnswer(boolean userPressedTrue){
         boolean answerIsTrue=mQuestionBank[mCurrentIndex].isAnswerTrue();
         int messageResId;
+        if (mIsCheater) {
+            messageResId = R.string.judgment_toast;
+        } else {
         if(userPressedTrue==answerIsTrue){
             messageResId=R.string.correct_toast;
         }
         else{
             messageResId=R.string.incorrect_toast;
         }
+        }
         Toast.makeText(this,messageResId,Toast.LENGTH_LONG).show();
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_CODE_CHEAT) {
+
+            if (data == null) {
+                return;
+            }
+            mIsCheater = CheatActivity.wasAnswerShown(data);
+        }
+
     }
 
    /* @Override
